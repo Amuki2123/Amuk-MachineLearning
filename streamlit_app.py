@@ -30,7 +30,7 @@ st.title("Regional Malaria Cases Forecasting App")
 st.write("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and temperature using various models.")
 
 # Upload dataset
-uploaded_file = st.file_uploader("Malaria Forecasting.zip", type="csv")
+uploaded_file = st.file_uploader("https://github.com/Amuki2123/Amuk-MachineLearning/blob/master/Malaria Forecasting.zip/Malaria Forecasting/malaria_data_upd", type="csv")
 if uploaded_file:
 data = pd.read_csv(malaria_data_upd)
 st.write(data)
