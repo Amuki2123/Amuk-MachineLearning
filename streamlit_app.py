@@ -32,12 +32,12 @@ st.write("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and te
 # Upload dataset
 uploaded_file = st.file_uploader("Malaria Forecasting.zip", type="csv")
 if uploaded_file:
-    data = pd.read_csv(malaria_data_upd)
-    st.write(data)
+data = pd.read_csv(malaria_data_upd)
+st.write(data)
 
-    # Preprocess uploaded data
-    data['Date'] = pd.to_datetime(data['Date'])
-    data.set_index('Date', inplace=True)
+# Preprocess uploaded data
+data['Date'] = pd.to_datetime(data['Date'])
+data.set_index('Date', inplace=True)
 
 # Load pre-trained models
 models = {
