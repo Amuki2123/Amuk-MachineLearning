@@ -30,9 +30,9 @@ st.title("Regional Malaria Cases Forecasting App")
 st.write("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and temperature using various models.")
 
 # Upload dataset
-uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
+uploaded_file = st.file_uploader("Malaria Forecasting.zip", type="csv")
 if uploaded_file:
-    data = pd.read_csv(uploaded_file)
+    data = pd.read_csv(malaria_data_upd)
     st.write(data)
 
     # Preprocess uploaded data
