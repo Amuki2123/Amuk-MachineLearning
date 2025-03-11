@@ -119,4 +119,3 @@ if 'future_df' in locals():
                        file_name=f"{region}_{model_type}_forecast.csv",
                        mime="text/csv")
 
-st.write('Hello world!')
