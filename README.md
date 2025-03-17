@@ -1,6 +1,6 @@
 # 📦 Streamlit App Starter Kit 
 ```
-⬆️ (Replace above with your app's name)
+⬆️ Malaria Forecasting App
 ```
 
 Description of the app ...
