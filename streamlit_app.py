@@ -1,10 +1,14 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
 import pickle
 import joblib
 import json
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from prophet import Prophet
+import zipfile
+import os
 import matplotlib.pyplot as plt
 from prophet import Prophet
 from neuralprophet import NeuralProphet
@@ -26,40 +30,54 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.graphics.tsaplots import plot_predict
 
 # Title of the app
-st.title("Regional Malaria Cases Forecasting App")
-st.write("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and temperature using various models.")
+st.title("🎈 Regional Malaria Cases Forecasting Models 🎈")
+st.info("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and temperature using various models.")
+
+# Path to the ZIP folder
+ZIP_PATH = "Malaria Forecasting.zip"  # Name of the ZIP file
+
+# Directory to extract the files to
+EXTRACT_DIR = "models"  # Directory where files will be extracted
+
+# Extract the ZIP folder if it hasn't been extracted already
+if not os.path.exists(EXTRACT_DIR):
+    with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
+        zip_ref.extractall(EXTRACT_DIR)
 
 # Upload dataset
-uploaded_file = st.file_uploader("https://github.com/Amuki2123/Amuk-MachineLearning/blob/master/Malaria Forecasting.zip/Malaria Forecasting/malaria_data_upd", type="csv")
+uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
 if uploaded_file:
-data = pd.read_csv(malaria_data_upd)
-st.write(data)
+    data = pd.read_csv(uploaded_file)
+    st.write(data)
 
-# Preprocess uploaded data
-data['Date'] = pd.to_datetime(data['Date'])
-data.set_index('Date', inplace=True)
+    # Preprocess uploaded data
+    data['Date'] = pd.to_datetime(data['Date'])
+    data.set_index('Date', inplace=True)
 
 # Load pre-trained models
-models = {
-    'Juba': {
-        'ARIMA': pickle.load(open('juba_arima_model.pkl', 'rb')),
-        'NeuralProphet': pickle.load(open('juba_np_model.pkl', 'rb')),
-        'Prophet': Prophet().from_json(open('juba_prophet_model.json', 'r').read()),
-        'Exponential Smoothing': pickle.load(open('juba_es_model.pkl', 'rb'))
-    },
-    'Yei': {
-        'ARIMA': pickle.load(open('yei_arima_model.pkl', 'rb')),
-        'NeuralProphet': pickle.load(open('yei_np_model.pkl', 'rb')),
-        'Prophet': Prophet().from_json(open('yei_prophet_model.json', 'r').read()),
-        'Exponential Smoothing': pickle.load(open('yei_es_model.pkl', 'rb'))
-    },
-    'Wau': {
-        'ARIMA': pickle.load(open('wau_arima_model.pkl', 'rb')),
-        'NeuralProphet': pickle.load(open('wau_np_model.pkl', 'rb')),
-        'Prophet': Prophet().from_json(open('wau_prophet_model.json', 'r').read()),
-        'Exponential Smoothing': pickle.load(open('wau_es_model.pkl', 'rb'))
+try:
+    models = {
+        'Juba': {
+            'ARIMA': pickle.load(open(os.path.join(EXTRACT_DIR, 'juba_arima_model.pkl'), 'rb')),
+            'NeuralProphet': pickle.load(open(os.path.join(EXTRACT_DIR, 'juba_np_model.pkl'), 'rb')),
+            'Prophet': Prophet().from_json(open(os.path.join(EXTRACT_DIR, 'juba_prophet_model.json'), 'r').read()),
+            'Exponential Smoothing': pickle.load(open(os.path.join(EXTRACT_DIR, 'juba_es_model.pkl'), 'rb'))
+        },
+        'Yei': {
+            'ARIMA': pickle.load(open(os.path.join(EXTRACT_DIR, 'yei_arima_model.pkl'), 'rb')),
+            'NeuralProphet': pickle.load(open(os.path.join(EXTRACT_DIR, 'yei_np_model.pkl'), 'rb')),
+            'Prophet': Prophet().from_json(open(os.path.join(EXTRACT_DIR, 'yei_prophet_model.json'), 'r').read()),
+            'Exponential Smoothing': pickle.load(open(os.path.join(EXTRACT_DIR, 'yei_es_model.pkl'), 'rb'))
+        },
+        'Wau': {
+            'ARIMA': pickle.load(open(os.path.join(EXTRACT_DIR, 'wau_arima_model.pkl'), 'rb')),
+            'NeuralProphet': pickle.load(open(os.path.join(EXTRACT_DIR, 'wau_np_model.pkl'), 'rb')),
+            'Prophet': Prophet().from_json(open(os.path.join(EXTRACT_DIR, 'wau_prophet_model.json'), 'r').read()),
+            'Exponential Smoothing': pickle.load(open(os.path.join(EXTRACT_DIR, 'wau_es_model.pkl'), 'rb'))
+        }
     }
-}
+except FileNotFoundError as e:
+    st.error(f"Model file not found: {e}")
 
 # Select region and model
 region = st.selectbox("Select a region:", ['Juba', 'Yei', 'Wau'])
@@ -110,12 +128,12 @@ if st.button("Forecast Malaria Cases"):
 
     except Exception as e:
         st.error(f"Error occurred during forecast: {e}")
+        future_df = None  # Ensure future_df is defined even if an error occurs
 
 # Option to download forecast as CSV
-if 'future_df' in locals():
+if 'future_df' in locals() and future_df is not None:
     csv = future_df.to_csv(index=False)
     st.download_button(label="Download Forecast as CSV",
                        data=csv,
                        file_name=f"{region}_{model_type}_forecast.csv",
                        mime="text/csv")
-
