@@ -1,6 +1,5 @@
 import streamlit as st
-import pickle
-import joblib
+import joblib  # Use joblib instead of pickle
 import json
 import pandas as pd
 import numpy as np
@@ -52,22 +51,22 @@ else:
         MODEL_DIR = os.path.join(EXTRACT_DIR, 'Malaria Forecasting')
         models = {
             'Juba': {
-                'ARIMA': pickle.load(open(os.path.join(MODEL_DIR, 'juba_arima_model.pkl'), 'rb')),
-                'NeuralProphet': pickle.load(open(os.path.join(MODEL_DIR, 'juba_np_model.pkl'), 'rb')),
+                'ARIMA': joblib.load(open(os.path.join(MODEL_DIR, 'juba_arima_model.pkl'), 'rb')),
+                'NeuralProphet': joblib.load(open(os.path.join(MODEL_DIR, 'juba_np_model.pkl'), 'rb')),
                 'Prophet': Prophet().from_json(open(os.path.join(MODEL_DIR, 'juba_prophet_model.json'), 'r').read()),
-                'Exponential Smoothing': pickle.load(open(os.path.join(MODEL_DIR, 'juba_es_model.pkl'), 'rb'))
+                'Exponential Smoothing': joblib.load(open(os.path.join(MODEL_DIR, 'juba_es_model.pkl'), 'rb'))
             },
             'Yei': {
-                'ARIMA': pickle.load(open(os.path.join(MODEL_DIR, 'yei_arima_model.pkl'), 'rb')),
-                'NeuralProphet': pickle.load(open(os.path.join(MODEL_DIR, 'yei_np_model.pkl'), 'rb')),
+                'ARIMA': joblib.load(open(os.path.join(MODEL_DIR, 'yei_arima_model.pkl'), 'rb')),
+                'NeuralProphet': joblib.load(open(os.path.join(MODEL_DIR, 'yei_np_model.pkl'), 'rb')),
                 'Prophet': Prophet().from_json(open(os.path.join(MODEL_DIR, 'yei_prophet_model.json'), 'r').read()),
-                'Exponential Smoothing': pickle.load(open(os.path.join(MODEL_DIR, 'yei_es_model.pkl'), 'rb'))
+                'Exponential Smoothing': joblib.load(open(os.path.join(MODEL_DIR, 'yei_es_model.pkl'), 'rb'))
             },
             'Wau': {
-                'ARIMA': pickle.load(open(os.path.join(MODEL_DIR, 'wau_arima_model.pkl'), 'rb')),
-                'NeuralProphet': pickle.load(open(os.path.join(MODEL_DIR, 'wau_np_model.pkl'), 'rb')),
+                'ARIMA': joblib.load(open(os.path.join(MODEL_DIR, 'wau_arima_model.pkl'), 'rb')),
+                'NeuralProphet': joblib.load(open(os.path.join(MODEL_DIR, 'wau_np_model.pkl'), 'rb')),
                 'Prophet': Prophet().from_json(open(os.path.join(MODEL_DIR, 'wau_prophet_model.json'), 'r').read()),
-                'Exponential Smoothing': pickle.load(open(os.path.join(MODEL_DIR, 'wau_es_model.pkl'), 'rb'))
+                'Exponential Smoothing': joblib.load(open(os.path.join(MODEL_DIR, 'wau_es_model.pkl'), 'rb'))
             }
         }
     except FileNotFoundError as e:
