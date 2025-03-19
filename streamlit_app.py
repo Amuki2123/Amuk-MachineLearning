@@ -9,22 +9,17 @@ import matplotlib.pyplot as plt
 from prophet import Prophet
 import zipfile
 import os
-import matplotlib.pyplot as plt
-from prophet import Prophet
 from neuralprophet import NeuralProphet
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from keras.models import model_from_json
-from prophet import Prophet
 from prophet.serialize import model_to_json, model_from_json
-from neuralprophet import NeuralProphet, set_log_level
 from sklearn.preprocessing import MinMaxScaler
 import statsmodels.api as sm
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.arima_model import ARIMAResults
 import pmdarima as pm
 from statsmodels.tsa.stattools import adfuller, kpss
-from statsmodels.tsa.stattools import acf
-from statsmodels.tsa.stattools import pacf
+from statsmodels.tsa.stattools import acf, pacf
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.graphics.tsaplots import plot_predict
 
@@ -36,22 +31,15 @@ st.info("Forecast malaria cases for Juba, Yei, and Wau based on rainfall and tem
 ZIP_PATH = "Malaria Forecasting.zip"  # Name of the ZIP file
 
 # Directory to extract the files to
-EXTRACT_DIR = "models"  # Directory where files will be extracted
+EXTRACT_DIR = "Malaria Forecasting"  # Directory where files will be extracted
 
 # Extract the ZIP folder if it hasn't been extracted already
 if not os.path.exists(EXTRACT_DIR):
     with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
         zip_ref.extractall(EXTRACT_DIR)
-
-# Upload dataset
-uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
-if uploaded_file:
-    data = pd.read_csv(uploaded_file)
-    st.write(data)
-
-    # Preprocess uploaded data
-    data['Date'] = pd.to_datetime(data['Date'])
-    data.set_index('Date', inplace=True)
+        st.write(f"Extracted files to: {EXTRACT_DIR}")
+        st.write("Contents of the extracted directory:")
+        st.write(os.listdir(EXTRACT_DIR))
 
 # Load pre-trained models
 try:
@@ -77,6 +65,8 @@ try:
     }
 except FileNotFoundError as e:
     st.error(f"Model file not found: {e}")
+except Exception as e:
+    st.error(f"An error occurred: {e}")
 
 # Select region and model
 region = st.selectbox("Select a region:", ['Juba', 'Yei', 'Wau'])
